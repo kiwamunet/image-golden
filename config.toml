@@ -1,0 +1,40 @@
+[server]
+## serverDomain is hostURL ex) https://example.co.jp:443/  or http://example.co.jp:8080/
+## Please define protocol, domain, port etc.
+serverDomain = "http://example.co.jp"
+
+## test param ###
+# no param
+[[server.param]]
+file = "image.jpg"
+query = ""
+
+# width
+[[server.param]]
+file = "image.jpg"
+query = "?width=100"
+
+# height
+[[server.param]]
+file = "image.jpg"
+query = "?height=100"
+
+# format png
+[[server.param]]
+file = "image.jpg"
+query = "?format=png"
+
+# format webp
+[[server.param]]
+file = "image.jpg"
+query = "?format=webp"
+
+# format webp
+[[server.param]]
+file = "image.png"
+query = "?format=jpg"
+
+# format grayscale
+[[server.param]]
+file = "image.jpg"
+query = "?grayscale=90"
