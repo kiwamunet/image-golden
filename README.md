@@ -18,8 +18,27 @@ Those used for testing are compared using binary comparison, psnr comparison, ss
 ## Bugs:
 
 ## Use:
+```go run cmd/main.go```
 
-```go run main.go -result_flie result/hoge.txt```
+## Options:
+
+### `-result_flie,--result_flie` [string] 
+`go run cmd/main.go --result_flie result/hoge.txt`
+
+Result output destination 
+
+### `-byte,--byte` [bool]
+`go run cmd/main.go --byte true`
+binary check
+
+### `--ssim,--ssim` [float64]
+`go run cmd/main.go --ssim 0.97`
+ssim check
+
+### `--psnr,--psnr` [float64]
+`go run cmd/main.go --psnr 1.5`
+psnr check
+
 
 ## Result:
 

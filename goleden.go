@@ -1,8 +1,7 @@
-package main
+package golden
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -35,23 +34,24 @@ type Param struct {
 	Query string `toml:"query"`
 }
 
-var (
-	resultFile = flag.String("result_flie", "", "list of result_flie")
-)
-
-func init() {
-	flag.Parse()
-}
-func main() {
-	run(os.Args)
+type Opt struct {
+	ResultFile string
+	Threshold  Th
 }
 
-func run(args []string) {
+type Th struct {
+	IsSsimCheck bool
+	Ssim        float64
+	IsPsnrCheck bool
+	Psnr        float64
+	IsByteCheck bool
+}
 
-	log.Println(*resultFile)
+func Golden(o *Opt) (res bool) {
+	res = true
 
 	// result file
-	f, err := createFile()
+	f, err := createFile(o.ResultFile)
 	defer f.Close()
 	if err != nil {
 		log.Fatalf("System error: Termination Err:%v", err)
@@ -88,13 +88,31 @@ func run(args []string) {
 		if err != nil {
 			Log(f, fmt.Sprintf("System error: Err:%v", err))
 		}
+		// byte check
+		if o.Threshold.IsByteCheck {
+			if !byteComp {
+				res = byteComp
+			}
+		}
+		// ssim checkt
+		if o.Threshold.IsSsimCheck {
+			if ssim < o.Threshold.Ssim {
+				res = false
+			}
+		}
+		// psnr check
+		if o.Threshold.IsPsnrCheck {
+			if psnr > o.Threshold.Psnr {
+				res = false
+			}
+		}
 		Log(f, fmt.Sprintf("Compare result. \n\tBYTE is : %t \n\tSSIM is : %f \n\tPSNR is : %f \n\tFILE is : %s ", byteComp, ssim, psnr, file))
 	}
 
 	Log(f, "\n\n\nComprete Test.")
 	Log(f, "\nFin.")
 	log.Println("\n\n===== Test is Completed!! Please look at [ result/result-XXXX.txt ] =====\n")
-	return
+	return res
 }
 
 func getConfig(configName string, f *os.File) Config {
@@ -109,10 +127,10 @@ func getConfig(configName string, f *os.File) Config {
 	return config
 }
 
-func createFile() (*os.File, error) {
+func createFile(file string) (*os.File, error) {
 	var fileName string
-	if *resultFile != "" {
-		fileName = *resultFile
+	if file != "" {
+		fileName = file
 	} else {
 		fileName = "result/result-" + time.Now().Format("2006-01-02-15:04:05") + ".txt"
 	}
